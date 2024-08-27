@@ -1,0 +1,28 @@
+{
+  "name": "fuguangweb",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.0.9",
+    "axios": "^1.0.0-alpha.1",
+    "echarts": "^5.5.1",
+    "element-plus": "^2.2.13",
+    "unplugin-auto-import": "^0.11.1",
+    "unplugin-vue-components": "^0.22.4",
+    "vue": "^3.2.37",
+    "vue-aliplayer-v3": "^1.0.3",
+    "vue-router": "^4.0.13",
+    "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.0.3",
+    "vite": "^3.0.7"
+  }
+}

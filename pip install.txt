@@ -1,0 +1,6 @@
+在运行环境中需导入的 python pip 包
+#django pip install django==4.2.2 #djangorestframework pip install djangorestframework #图片pillow pip install Pillow
+
+#数据库 #pymysql pip install pymysql #mysqlclient pip install mysqlclient #mysql默认使用引擎，如果想使用pymysql，需要在主应用中配置pymsyql
+
+#connection-pool pip install django-db-connection-pool
