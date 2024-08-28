@@ -42,7 +42,12 @@ INSTALLED_APPS = [
     'corsheaders', # 跨域配置
     'api',
     'home',
+    'users', # 用户管理子应用
 ]
+
+# 设置dajgno AUTH认证系统所需用户模型
+# 格式:子应用名 模型类名  # 必须在第一次迁移时就配置完成
+AUTH_USER_MODEL = "users.UsersModel"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
