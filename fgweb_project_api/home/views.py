@@ -6,7 +6,7 @@ from rest_framework.generics import ListAPIView
 from home.models import NavModel
 from fgweb_project_api.settings.utils import constants
 
-class NavHeaderListViews(APIView):
+class NavHeaderListViews(ListAPIView):
     queryset = NavModel.objects.filter(is_show=True,is_deleted=False,postion=constants.NAV_HEARD).order_by('-id')[:constants.NAV_HEARD_SIZE]
     serializer_class = NavSerializer
     

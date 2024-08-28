@@ -6,7 +6,7 @@ const nav = reactive({
     footer_nav_list: [], // 脚部导航列表
     get_header_nav() {
         // 获取头部导航菜单
-        return http.get("home/heradnav/").then(response => {
+        return http.get("home/headnav/").then(response => {
             // console.log('头部导航请求成功.....')
             // console.log(response)
             this.header_nav_list = response.data;
