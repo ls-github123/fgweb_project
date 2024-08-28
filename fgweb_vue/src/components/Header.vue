@@ -59,10 +59,10 @@
           </div>
         </div>
       </div>
-    </div>
-    <el-dialog :width="600" v-model="state.show_login">
+      <el-dialog :width="600" v-model="state.show_login">
       <Login @successhandle="state.show_login=false"></Login>
-    </el-dialog>
+      </el-dialog>
+    </div>
 </template>
 
 
@@ -124,8 +124,7 @@ const search_course = (hotword)=>{
   width: 100%;
   margin: 0 auto;
 }
-.header .content .logo a{
-}
+
 .header .content .logo{
   height: 72px;
   line-height: 72px;

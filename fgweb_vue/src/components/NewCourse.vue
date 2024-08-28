@@ -1,26 +1,28 @@
 <template>
-  <div class="bg000" v-for="i,ind in cates.c_list" :key="ind">
-    <div class="container-types new-course">
-      <h3 class="types-title justify-content_flex-start">{{i.name}}
-        <ul class="menu">
-          <li 
-              v-for="item,index in i.cates" :key="index" @click="selectTab(item,ind)"
-          >
-            <a>{{ item.name }}</a>
-          </li>
-        </ul>
-      </h3>
-      <div class="list clearfix show"  v-for="c,cindex in i.courses" :key="cindex">
-        <a class="item" >
-          <div class="img"
-               style="background-image: url('https://img1.sycdn.imooc.com/szimg/65e07b1108d30cc005400304.jpg')">
-          </div>
-          <div class="title ellipsis2">{{c.name}}</div>
-          <div class="difficulty">中级 · 172人报名 </div>
-          <div class="bottom clearfix">
-            <span class="price l red bold">￥499.00</span>
-          </div>
-        </a>
+  <div>
+    <div class="bg000" v-for="i,ind in cates.c_list" :key="ind">
+      <div class="container-types new-course">
+        <h3 class="types-title justify-content_flex-start">{{i.name}}
+          <ul class="menu">
+            <li 
+                v-for="item,index in i.cates" :key="index" @click="selectTab(item,ind)"
+            >
+              <a>{{ item.name }}</a>
+            </li>
+          </ul>
+        </h3>
+        <div class="list clearfix show"  v-for="c,cindex in i.courses" :key="cindex">
+          <a class="item" >
+            <div class="img"
+                style="background-image: url('https://img1.sycdn.imooc.com/szimg/65e07b1108d30cc005400304.jpg')">
+            </div>
+            <div class="title ellipsis2">{{c.name}}</div>
+            <div class="difficulty">中级 · 172人报名 </div>
+            <div class="bottom clearfix">
+              <span class="price l red bold">￥499.00</span>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   </div>
