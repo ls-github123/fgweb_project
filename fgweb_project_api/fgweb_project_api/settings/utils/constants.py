@@ -8,3 +8,6 @@ NAV_HEARD_SIZE = 5
 
 #底部导航最大显示数量
 NAV_FOOTER_SIZE = 10
+
+# 轮播图最大请求数量
+BANNER_SIZE = 5

@@ -182,8 +182,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_URL = [os.path.join(BASE_DIR.parent, "static")]
+STATICFILES_URL = [ os.path.join(BASE_DIR.parent, "static") ]
 # midia配置
+MEDIA_ROOT = os.path.join(BASE_DIR.parent,'media')
+
+# 前端访问后端文件前缀
+MEDIA_URL = "/uploads/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

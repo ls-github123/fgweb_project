@@ -17,3 +17,16 @@ class NavModel(BaseModel):
         managed = True
         verbose_name = '导航菜单'
         verbose_name_plural = '导航菜单'
+        
+# 轮播图模型类
+class BannerModel(BaseModel):
+    image = models.ImageField(upload_to="banner/%Y")
+    link = models.CharField(max_length=300, verbose_name="是否为外部链接")
+    note = models.CharField(max_length=100, verbose_name="备注信息")
+    is_http = models.BooleanField(default=False, verbose_name="是否为外部链接", help_text="站点外部连接：http://www.baidu.com <br>站点内的连接：/home/detail/")
+    
+    class Meta:
+        db_table = 'fg_banner'
+        managed = True
+        verbose_name = '轮播广告'
+        verbose_name_plural = '轮播广告'
