@@ -37,10 +37,16 @@ watch(
     () => {
   if(/^1[3-9]\d{9}$/.test(user.account)){
     // 发送ajax验证手机号是否已经注册
-    user.check_mobile().catch(error=>{
+    user.check_mobile().then((result) => {
+      ElMessage({
+        message: result.data.message,
+        type: 'success',
+      }) // 手机号未注册提示弹框
+    })
+    .catch(error => {
       console.log(error);
       ElMessage.error(error.response.data.message);
-    })
+    }) // 手机号已注册提示
   }
 })
 
