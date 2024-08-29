@@ -288,3 +288,6 @@ SIMPLE_JWT = {
     # 指定载荷信息的序列化器
     'TOKEN_OBTAIN_SERIALIZER':'users.userserializer.CoustomTokenObtainPairSerializer',
 }
+
+# 配置自定义条件（多条件认证登录）类
+AUTHENTICATION_BACKENDS = ['users.bankends.CoustomModelBancked', ]
