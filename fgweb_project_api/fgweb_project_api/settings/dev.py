@@ -285,4 +285,6 @@ SIMPLE_JWT = {
     # token刷新的有效时间(返回的 refresh token 有效时长，refresh token的用途是在access token 过期以后，
     # 允许客户端使用refresh token到服务端换一个新的access token，也因此refresh token的有效期往往比access token的有效期要长)
     'REFRESH_TOKEN_LIFETIME': timedelta(weeks=1),
+    # 指定载荷信息的序列化器
+    'TOKEN_OBTAIN_SERIALIZER':'users.userserializer.CoustomTokenObtainPairSerializer',
 }
