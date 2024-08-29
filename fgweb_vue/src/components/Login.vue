@@ -136,6 +136,7 @@ const loginhandle = (res)=>{
     console.log(payload_data)
     store.commit("login", payload_data)
     store.commit("remember", user.rememberMe);
+    console.log("登录成功");
     ElMessage.success("登录成功！");
 
     // 关闭登录弹窗，对外发送一个登录成功的信息
@@ -144,6 +145,7 @@ const loginhandle = (res)=>{
 
 
   }).catch(error=>{
+    console.log(error);
     ElMessage.error("登录失败！");
   })
 
