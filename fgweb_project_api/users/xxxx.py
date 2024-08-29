@@ -53,7 +53,8 @@ data = header+payloads+SECRET_KEY
 HS256 = hashlib.sha256()
 HS256.update(data.encode('utf-8'))
 signatrue = HS256.hexdigest()
-print(signatrue)
+print(f'签证数据:{signatrue}')
+
 
 # 头部、载荷部分、签证部分
 token = f"{header}.{payloads}.{signatrue}"

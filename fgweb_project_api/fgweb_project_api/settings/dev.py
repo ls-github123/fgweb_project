@@ -262,4 +262,27 @@ LOGGING = {
 REST_FRAMEWORK = {
     # 自定义异常处理
     'EXCEPTION_HANDLER': 'fgweb_project_api.settings.utils.exceptions.costom_exception_handler',
+    
+    # 自定义认证
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # jwt认证[api客户端]
+        'rest_framework.authentication.SessionAuthentication',  # session认证[Admin站点]
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+# JWT配置
+# 两种使用情况 续签 和 不续签
+# JWT 过期时允许客户端通过token 重新到服务端获取一个新的token
+# JWT 过期时强制客户端重新通过账号密码到服务器生成新的token
+
+# # token(有效期较短1天)    refresh_toekn（有效期较长10天）
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    # token有效时长(返回的 access token 有效时长， access token的用途是提供用户身份，进行身份识别)
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=60*10),
+    # token刷新的有效时间(返回的 refresh token 有效时长，refresh token的用途是在access token 过期以后，
+    # 允许客户端使用refresh token到服务端换一个新的access token，也因此refresh token的有效期往往比access token的有效期要长)
+    'REFRESH_TOKEN_LIFETIME': timedelta(weeks=1),
 }
