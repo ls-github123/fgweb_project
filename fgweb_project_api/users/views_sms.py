@@ -37,25 +37,20 @@ class SMSApiViews(APIView):
             "time":str(code_expire) # 验证码有效时间
         }
         
-        # 调用接口发送验证码
+        # 调用接口 尝试发送验证码
         res = send_sms(phone_number, template_param)
-        
-        # 获取验证码过期时间
-        sms_expire = aliyunsms.get('sms_expire')
         
         # 向redis数据库中保存手机号与验证码
         # redis.setex(name, time, value)
         # name-要设置的键  time-该键过期时间(秒为单位) value-写入的内容(随机生成的验证码)
-        # sms_{mobile}键 通过手机号来查找对应的验证码
-        redis.setex(f'sms_{mobile}', sms_expire, re_code)
-        
-        # interval_{mobile}键 记录发送验证码的时间间隔
-        redis.setex(f'interval_{mobile}', sms_interval, '-')
         
         if res == "OK":
             # 短信发送成功，保存验证码到 Redis
+            # 获取验证码过期时间
             sms_expire = aliyunsms.get('sms_expire')
+            # sms_{mobile}键 通过手机号来查找对应的验证码
             redis.setex(f'sms_{mobile}', sms_expire, re_code)
+            # interval_{mobile}键 记录发送验证码的时间间隔
             redis.setex(f'interval_{mobile}', sms_interval, '-')
             return Response({"message": "短信验证码发送成功"}, status=status.HTTP_200_OK)
         else:
