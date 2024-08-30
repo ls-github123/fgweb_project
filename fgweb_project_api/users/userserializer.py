@@ -2,6 +2,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from users import models
 import re
+from django_redis import get_redis_connection # redis数据库连接
 
 # 自定义序列化器，实现自定义载荷信息的添加
 class CoustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -64,8 +65,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         print('------密码校验通过------')
         
         # 验证码获取/校验模块
-        # 开发中
-        # ------------------
+        sms_code = attrs.get('sms_code')
+        redis = get_redis_connection('sms_code')
+        code = redis.get(f"sms_{mobile}")
+        print(f"redis—code:{code}")
+        if code == None:
+            raise serializers.ValidationError(detail="验证码过期", code="sms_code")
+        # 从redis中获取验证码, 与前端传回验证码进行校验
+        if code.decode() != sms_code:
+            raise serializers.ValidationError(detail="验证码错误", code="sms_code")
+        redis.delete(f"sms_{mobile}")
+        # 验证码模块 校验结束-------
         
         try:
             # 用户已存在，抛出异常

@@ -111,10 +111,15 @@ DATABASES = {
 }
 
 # redis数据库配置
+# 从.env文件中读取redis配置信息
+REDIS_HOST = config('REDIS_HOST', default='127.0.0.1')
+REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
+REDIS_PASSWORD = config('REDIS_PASSWORD', default='')
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:lsredis000314@182.92.217.5:6379/0",
+        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # 连接池配置
@@ -125,7 +130,7 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         # "LOCATION": "redis://127.0.0.1:6379/1",
         # LOCATION:'reids://:密码@IP地址：端口号/库编号'
-        "LOCATION": "redis://:lsredis000314@182.92.217.5:6379/1",
+        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # 连接池的配置
@@ -133,12 +138,12 @@ CACHES = {
         }
     },
     
-    # 配置站点 Admin管理系统
+    # 配置站点 短信验证码
     "sms_code": {
         "BACKEND": "django_redis.cache.RedisCache",
         # "LOCATION": "redis://127.0.0.1:6379/1",
         # LOCATION:'reids://:密码@IP地址：端口号/库编号'
-        "LOCATION": "redis://:lsredis000314@182.92.217.5:6379/1",
+        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # 连接池的配置
@@ -291,3 +296,16 @@ SIMPLE_JWT = {
 
 # 配置自定义条件（多条件认证登录）类
 AUTHENTICATION_BACKENDS = ['users.bankends.CoustomModelBancked', ]
+
+
+# 验证码发送接口
+# 配置阿里云SMS_server
+ALIYUNSMS_SERVER = {
+    "access_key_id":config("ACCESS_KEY_ID"),
+    "access_key_secret":config("ACCESS_KEY_SECRET"),
+    
+    "sign_name":"浮光web", # 短信验证码签名名称
+    "template_code":"SMS_472475222", # 短信验证码模板代码
+    "sms_expire": 600, # 验证码有效时间
+    "sms_interval": 180 # 180秒 短信发送间隔
+}
