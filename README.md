@@ -48,4 +48,12 @@
 1. 创建新的虚拟环境:(python -m venv venv);
 2. 激活虚拟环境: windows(venv\Scripts\activate) Linux(source venv/bin/activate);
 3. 安装 requirements.txt 文件中的依赖包:(pip install -r requirements.txt)
-    
+
+
+# celery 配置
+pip install celery
+#在window中使用，需要安装 以下插件
+pip install eventlet
+
+#window中启动celery命令
+celery -A mycelery.main worker -l info -P eventlet -c 10
