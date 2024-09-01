@@ -307,5 +307,5 @@ ALIYUNSMS_SERVER = {
     "sign_name":"浮光web", # 短信验证码签名名称
     "template_code":"SMS_472475222", # 短信验证码模板代码
     "sms_expire": 600, # 验证码有效时间
-    "sms_interval": 180 # 180秒 短信发送间隔
+    "sms_interval": 60 # 60秒 短信发送间隔
 }

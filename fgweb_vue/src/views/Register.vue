@@ -114,7 +114,7 @@ const registerhandler = (res)=> {
     // 注册失败！
     console.log('-----注册失败----');
     console.log(error);
-    ElMessage.success(`用户注册失败！错误信息：${error?.response?.data?.errmsg}`);
+    ElMessage.error(`用户注册失败！错误信息:${error?.response?.data?.errmsg}`);
   })
 
 }

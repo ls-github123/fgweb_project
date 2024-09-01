@@ -46,8 +46,6 @@ class SMSApiViews(APIView):
         
         if res == "OK":
             # 短信发送成功，保存验证码到 Redis
-            # 获取验证码过期时间
-            sms_expire = aliyunsms.get('sms_expire')
             # sms_{mobile}键 通过手机号来查找对应的验证码
             redis.setex(f'sms_{mobile}', sms_expire, re_code)
             # interval_{mobile}键 记录发送验证码的时间间隔
