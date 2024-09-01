@@ -51,9 +51,10 @@
 
 
 # celery 配置
+# 安装celery pip包
 pip install celery
 #在window中使用，需要安装 以下插件
 pip install eventlet
 
 #window中启动celery命令
-celery -A mycelery.main worker -l info -P eventlet -c 10
+celery -A celery_module.main worker -l info -P eventlet -c

@@ -38,23 +38,31 @@ class SMSApiViews(APIView):
         }
         
         # 调用接口 尝试发送验证码
-        res = send_sms(phone_number, template_param)
+        # res = send_sms(phone_number, template_param)
+        
+        # 导入异步任务
+        from celery_module.sms.tasks import send_message
+        # 执行异步任务
+        send_message.delay(phone_number, template_param)
+        pipe = redis.pipeline()
+        pipe.multi() # 开始事务,保证命令一并发送到服务器
+        redis.setex(f'sms_{mobile}', sms_expire, re_code)
+        redis.setex(f'interval_{mobile}', sms_interval, '-')
+        # 提交事务, 同时把暂存在pipeline对象中的多条命令,一次性提交给redis
+        pipe.execute()
         
         # 向redis数据库中保存手机号与验证码
         # redis.setex(name, time, value)
         # name-要设置的键  time-该键过期时间(秒为单位) value-写入的内容(随机生成的验证码)
         
-        if res == "OK":
-            # 短信发送成功，保存验证码到 Redis
-            # sms_{mobile}键 通过手机号来查找对应的验证码
-            redis.setex(f'sms_{mobile}', sms_expire, re_code)
-            # interval_{mobile}键 记录发送验证码的时间间隔
-            redis.setex(f'interval_{mobile}', sms_interval, '-')
-            return Response({"message": "短信验证码发送成功"}, status=status.HTTP_200_OK)
-        else:
-            # 短信发送失败，返回错误信息
-            return Response({"message": f"短信验证码发送失败! 错误代码: {res}"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        
-        
-        
+        # if res == "OK":
+        #     # 短信发送成功，保存验证码到 Redis
+        #     # sms_{mobile}键 通过手机号来查找对应的验证码
+        #     redis.setex(f'sms_{mobile}', sms_expire, re_code)
+        #     # interval_{mobile}键 记录发送验证码的时间间隔
+        #     redis.setex(f'interval_{mobile}', sms_interval, '-')
+        #     return Response({"message": "短信验证码发送成功"}, status=status.HTTP_200_OK)
+        # else:
+        #     # 短信发送失败，返回错误信息
+        #     return Response({"message": f"短信验证码发送失败! 错误代码: {res}"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message":"短信发送成功"}, status=status.HTTP_200_OK)
