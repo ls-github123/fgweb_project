@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'api',
     'home',
     'users', # 用户管理子应用
+    'course', # 课程管理
 ]
 
 # 设置dajgno AUTH认证系统所需用户模型
