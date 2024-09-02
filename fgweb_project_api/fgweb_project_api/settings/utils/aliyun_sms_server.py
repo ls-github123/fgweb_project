@@ -33,8 +33,8 @@ def send_sms(phone_number, template_param):
     
     # 设置请求参数
     request.phone_numbers = phone_number # 接收短信手机号
-    request.sign_name = aliyun_server.get('sign_name') if isinstance(aliyun_server, dict) else ''
-    request.template_code = aliyun_server.get('template_code') if isinstance(aliyun_server, dict) else ''
+    request.sign_name = aliyun_server.get('sign_name')
+    request.template_code = aliyun_server.get('template_code')
     request.template_param = json.dumps(template_param) # 模板变量对应值 转换为json字符串
     
     try:
