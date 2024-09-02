@@ -55,7 +55,7 @@ class TeacherModel(BaseModel):
         return self.name
     
     def avatar_small(self):
-        print('小图标配置....')
+        # print('小图标配置....')
         # 管理站点不支持展示图片, return给管理站点提供image标签
         return mark_safe(f'<img style="border-radius:100%" alt=" " src="{ self.avatar.thumb_50x50.url }"></img>')
     # 图片描述
@@ -66,7 +66,7 @@ class TeacherModel(BaseModel):
     avatar_small.admin_order_field = 'avatar'
     
     def avatar_large(self):
-        print('小图标配置.....')
+        # print('小图标配置.....')
         # 管理站点不支持展示图片, return给管理站点提供一个image标签
         return mark_safe(f'<img style="border-radius:100%" alt="头像" src="{ self.avatar.thumb_800x800.url }"></img>')
     # 图片描述
