@@ -1,14 +1,12 @@
 import random # 随机数模组
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from fgweb_project_api.settings.utils.aliyun_sms_server import send_sms
+# from fgweb_project_api.settings.utils.aliyun_sms_server import send_sms
 from django.conf import settings
 from rest_framework import status
 from django_redis import get_redis_connection
 # 导入celery异步任务
 from celery_module.sms.tasks import send_message
-from celery.result import AsyncResult
-
 
 class SMSApiViews(APIView):
     def get(self, request, mobile):
@@ -41,51 +39,16 @@ class SMSApiViews(APIView):
             "time":str(code_expire) # 验证码有效时间
         }
         
-        # 调用接口 尝试发送验证码
-        # res = send_sms(phone_number, template_param)
+        # celery 执行异步任务
+        send_message.delay(phone_number, template_param)
+        # redis操作
+        # 往redis中保存手机号与验证码
+        # 使用redis提供的管道对象：pipeline 优化redis写入操作
+        pipe = redis.pipeline()
+        pipe.multi() #开始事务  保证命令一并发送到服务端，
+        redis.setex(f"sms_{mobile}",sms_expire, re_code)
+        redis.setex(f"interval_{mobile}",sms_interval,'-')
+        # 提交事务，同时把暂存在pipeline对象中的多条命令，一次性提交给reids
+        pipe.execute()
         
-        # 向redis数据库中保存手机号与验证码
-        # redis.setex(name, time, value)
-        # name-要设置的键  time-该键过期时间(秒为单位) value-写入的内容(随机生成的验证码)
-        
-        # if res == "OK":
-        #     # 短信发送成功，保存验证码到 Redis
-        #     # sms_{mobile}键 通过手机号来查找对应的验证码
-        #     redis.setex(f'sms_{mobile}', sms_expire, re_code)
-        #     # interval_{mobile}键 记录发送验证码的时间间隔
-        #     redis.setex(f'interval_{mobile}', sms_interval, '-')
-        #     return Response({"message": "短信验证码发送成功"}, status=status.HTTP_200_OK)
-        # else:
-        #     # 短信发送失败，返回错误信息
-        #     return Response({"message": f"短信验证码发送失败! 错误代码: {res}"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # 调用celery异步任务
-        task = send_message.delay(phone_number, template_param)
-        
-        # 检查任务执行状态
-        result = AsyncResult(task.id)
-        try:
-            task_result = result.get(timeout=10)  # 等待任务结果
-
-            # 检查 task_result 的类型
-            if isinstance(task_result, dict):
-                # 如果 task_result 是字典
-                if task_result.get('Code') == 'OK':
-                    # 向 redis 数据库中保存手机号与验证码
-                    pipe = redis.pipeline()
-                    pipe.multi()  # 开始事务
-                    redis.setex(f"sms_{mobile}", sms_expire, re_code)
-                    redis.setex(f"interval_{mobile}", sms_interval, '-')
-                    pipe.execute()  # 提交事务
-                    return Response({"message": "验证码发送成功"}, status=status.HTTP_200_OK)
-                else:
-                    # 如果 Code 不是 'OK'
-                    return Response({"message": task_result.get('Message', '未知错误')}, status=status.HTTP_400_BAD_REQUEST)
-            elif isinstance(task_result, str):
-                # 如果 task_result 是字符串
-                return Response({"message": task_result}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                # 如果 task_result 既不是字典也不是字符串
-                return Response({"message": "未知错误"}, status=status.HTTP_400_BAD_REQUEST)
-        except TimeoutError:
-            return Response({"message": "任务执行超时"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"message": "短信发送成功"}, status=status.HTTP_200_OK)

@@ -27,13 +27,14 @@ def init_client():
 
 # 短信发送接口
 def send_sms(phone_number, template_param):
+    print(type(aliyun_server))
     client = init_client()
     request = sms_models.SendSmsRequest()
     
     # 设置请求参数
     request.phone_numbers = phone_number # 接收短信手机号
-    request.sign_name = aliyun_server.get('sign_name') # 短信签名名称
-    request.template_code = aliyun_server.get('template_code') # 短信模板代码
+    request.sign_name = aliyun_server.get('sign_name') if isinstance(aliyun_server, dict) else ''
+    request.template_code = aliyun_server.get('template_code') if isinstance(aliyun_server, dict) else ''
     request.template_param = json.dumps(template_param) # 模板变量对应值 转换为json字符串
     
     try:
