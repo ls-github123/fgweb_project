@@ -25,4 +25,5 @@ urlpatterns = [
     path('home/', include('home.urls')),
     path('users/', include('users.urls')),
     path('course/', include('course.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')), # 富文本编辑器路径
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

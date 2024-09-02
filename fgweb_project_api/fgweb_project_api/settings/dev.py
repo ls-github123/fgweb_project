@@ -32,12 +32,15 @@ CORS_ORIGIN_ALLOW_ALL = True # 配置跨域,允许所有访问
 # Application definition
 
 INSTALLED_APPS = [
+    'simpleui', # 导入simpleui后台管理模板库
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor', # 导入ckeditor富文本编辑器
+    'ckeditor_uploader',
     'rest_framework',
     'corsheaders', # 跨域配置
     'api',
@@ -309,4 +312,23 @@ ALIYUNSMS_SERVER = {
     "template_code":"SMS_472475222", # 短信验证码模板代码
     "sms_expire": 600, # 验证码有效时间
     "sms_interval": 60 # 60秒 短信发送间隔
+}
+
+# 富文本编辑器配置
+# 媒体资源的访问前缀
+CKEDITOR_UPLOAD_PATH = "ckeditor/"
+# 工具条配置
+CKEDITOR_CONFIGS = {
+    'default': {
+        # 'toolbar': 'full', # full 显示全部工具 Basic 显示基本工具
+        'toolbar': 'Custom',  # 自定义工具条的显示数量
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline', 'Image', 'Styles','Format', 'Font', 'Fontsize'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source']
+        ],
+        # 设置编辑器的高度
+        'height': 300,
+    },
 }
