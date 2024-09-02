@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ckeditor', # 导入ckeditor富文本编辑器
     'ckeditor_uploader',
+    'stdimage', # 导入图片处理-对原图生成缩略图
     'rest_framework',
     'corsheaders', # 跨域配置
     'api',
@@ -332,3 +333,22 @@ CKEDITOR_CONFIGS = {
         'height': 300,
     },
 }
+
+# admin 公共站点配置
+from django.contrib import admin
+admin.AdminSite.site_header = '浮光在线'
+admin.AdminSite.site_title = '浮光在线教育站点管理'
+
+# 登录界面logo
+SIMPLEUI_LOGO = '/uploads/logo.png'
+# 快速操作
+SIMPLEUI_HOME_QUICK = True
+# 服务器信息
+SIMPLEUI_HOME_INFO = True
+
+# 关闭simpleui内置的试用分析
+SIMPLEUI_ANALYSIS = False
+# 离线模式
+SIMPLEUI_STATIC_OFFLINE = True
+# 首页图标地址
+SIMPLEUI_INDEX = 'http://127.0.0.1:3000/'

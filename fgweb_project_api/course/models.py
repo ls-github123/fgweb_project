@@ -1,6 +1,8 @@
 from django.db import models
 from fgweb_project_api.settings.utils.models import BaseModel
 from ckeditor_uploader.fields import RichTextUploadingField
+from stdimage import StdImageField # 导入图片处理-缩略原图
+from django.utils.safestring import mark_safe
 # 方向列表\\\\专业列表
 
 class CourseDirectionModel(BaseModel):
@@ -37,7 +39,13 @@ class TeacherModel(BaseModel):
     title = models.CharField(max_length=100, verbose_name='职位、职称')
     signature = models.CharField(max_length=255, blank=True, null=True, verbose_name='导师签名')
     # 改写
-    avatar = models.ImageField(upload_to='avatar/%Y/', null=True, verbose_name='讲师头像')
+    # avatar = models.ImageField(upload_to='avatar/%Y/', null=True, verbose_name='讲师头像')
+    avatar = StdImageField(upload_to='avatar/%Y/', null=True, verbose_name='讲师头像',
+                           variations={ # 定义图片尺寸
+                                    'thumb_800x800':{'width':800,'height':800}, # 'large': (600, 400)
+                                    'thumb_400x400':{'width':400,'height':400},# 'thumbnail': (100, 100, True)
+                                    'thumb_50x50':{'width':50,'height':50},# 'medium': (300, 200)
+                           }, delete_orphans=True)
     brief = RichTextUploadingField(max_length=255, verbose_name='讲师描述')
     
     class Meta():
@@ -46,6 +54,29 @@ class TeacherModel(BaseModel):
     def __str__(self):
         return self.name
     
+    def avatar_small(self):
+        print('小图标配置....')
+        # 管理站点不支持展示图片, return给管理站点提供image标签
+        return mark_safe(f'<img style="border-radius:100%" alt=" " src="{ self.avatar.thumb_50x50.url }"></img>')
+    # 图片描述
+    avatar_small.short_description = '头像图片'
+    # 图片显示控制
+    avatar_small.allow_tags = True
+    # 设置排序顺序
+    avatar_small.admin_order_field = 'avatar'
+    
+    def avatar_large(self):
+        print('小图标配置.....')
+        # 管理站点不支持展示图片, return给管理站点提供一个image标签
+        return mark_safe(f'<img style="border-radius:100%" alt="头像" src="{ self.avatar.thumb_800x800.url }"></img>')
+    # 图片描述
+    avatar_large.short_description = '头像图片'
+    # 图片显示控制
+    avatar_large.allow_tags = True
+    # 设置排序顺序
+    avatar_large.admin_order_field = "avatar"
+    
+
 class CourseModel(BaseModel):
     COURSE_TYPE_CHOICES = {
         (0, '付费购买'),
