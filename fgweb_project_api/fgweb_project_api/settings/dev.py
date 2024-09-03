@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
+import oss2 # 阿里云对象存储OSS
 from pathlib import Path
 # python-decouple包, 导入本地.env配置信息(mysql数据库地址、密码、端口等),该信息不会被git同步
 from decouple import config
@@ -352,3 +353,20 @@ SIMPLEUI_ANALYSIS = False
 SIMPLEUI_STATIC_OFFLINE = True
 # 首页图标地址
 SIMPLEUI_INDEX = 'http://127.0.0.1:3000/'
+
+
+# 阿里云OSS对象存储配置
+# ACCESS_KEY 令牌信息导入
+OSS_ACCESS_KEY_ID = config('ACCESS_KEY_ID')
+OSS_ACCESS_KEY_SECRET = config('ACCESS_KEY_SECRET')
+# bucket名称
+OSS_BUCKET_NAME = 'fgweb-project'
+# 访问域名
+OSS_ENDPOINT = 'oss-cn-beijing.aliyuncs.com'
+
+# 替换django本地文件存储至OSS存储服务器
+DEFAULT_FILE_STORAGE = 'django_oss_storage.backends.OssMediaStorage'
+
+import django
+from django.utils.encoding import force_str
+django.utils.encoding.force_text = force_str
