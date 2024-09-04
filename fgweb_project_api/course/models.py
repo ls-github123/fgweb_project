@@ -122,3 +122,12 @@ class CourseModel(BaseModel):
         verbose_name_plural = "课程信息"
     def __str__(self):
         return self.name
+    
+    @property
+    def discount(self):
+        # 返回折扣信息
+        return {
+            "type":"0", # 满减\折扣 免费
+            "expire":"1000", # 过期时间
+            "price":"188" # 优惠价格
+        }
