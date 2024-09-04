@@ -3,6 +3,7 @@ from fgweb_project_api.settings.utils.models import BaseModel
 from ckeditor_uploader.fields import RichTextUploadingField
 from stdimage import StdImageField # 导入图片处理-缩略原图
 from django.utils.safestring import mark_safe
+import datetime
 # 方向列表\\\\专业列表
 
 class CourseDirectionModel(BaseModel):
@@ -126,8 +127,66 @@ class CourseModel(BaseModel):
     @property
     def discount(self):
         # 返回折扣信息
+        # 查询有效活动
+        now_time = datetime.datetime.now()
+        last_activate = self.price_list.filter(activate__start_time__lt = now_time, activate__end_time__gt = now_time).order_by('-id').first()
+        if last_activate:
+            # 有优惠活动 -- 获取当前课程对应所有优惠信息
+            print(last_activate.activate.name)
+            print(last_activate.activate.end_time)
+            print(last_activate.discount.discount_type.name)
+        else:
+            print('当前课程没有参与优惠活动')
         return {
             "type":"0", # 满减\折扣 免费
             "expire":"1000", # 过期时间
             "price":"188" # 优惠价格
         }
+        
+# 优惠活动表
+class ActivateModel(BaseModel):
+    start_time = models.DateTimeField('开始时间', default=datetime.datetime.now())
+    end_time = models.DateTimeField(default=datetime.datetime.now(),verbose_name='结束时间')
+    description = RichTextUploadingField(blank=True,null=True,verbose_name='活动介绍')
+    remark = models.CharField(max_length=300,blank=True,null=True,verbose_name="备注信息")
+    class Meta():
+        db_table = 'fg_activate'
+        verbose_name_plural = '优惠活动'
+# 优惠类型
+# 满减、折扣
+class DiscountTypeModel(BaseModel):
+    remark = models.CharField(max_length=300,blank=True,null=True,verbose_name="备注信息")
+    class Meta():
+        db_table = 'fg_discount_type'
+        verbose_name_plural = '优惠类型'
+
+# 折扣表
+class DiscountModel(BaseModel):
+    discount_type = models.ForeignKey(DiscountTypeModel,on_delete=models.CASCADE,db_constraint=False,verbose_name="优惠类型")
+
+    # 优惠限制条件
+    #不填写，表示优惠没有门槛
+    condition = models.IntegerField(blank=True,default=0,verbose_name='优惠条件')
+
+    # 定义折扣
+    # 人为定义一个折扣
+    sale = models.CharField(max_length=50,verbose_name="优惠公式")
+    # 0表示免费
+    # * 表示折扣    *0.8  表示打8折
+    # -表示满减   -100   满足条件，减100
+    def __str__(self):
+        return "优惠：%s - 条件 %s 优惠方式：%s" % (self.discount_type.name,self.condition,self.sale)
+    class Meta():
+        db_table = "fg_discount"
+        verbose_name_plural = "折扣表"
+
+class CourseActivateModel(BaseModel):
+    activate = models.ForeignKey(ActivateModel,on_delete=models.CASCADE,related_name='price_list',db_constraint=False,verbose_name="活动")
+    course = models.ForeignKey(CourseModel,on_delete=models.CASCADE,related_name="price_list",db_constraint=False,verbose_name='课程')
+    discount = models.ForeignKey(DiscountModel,on_delete=models.CASCADE,related_name="price_list",db_constraint=False,verbose_name='折扣')
+    class Meta:
+        db_table = "fg_course_activate_price"
+        # 课程活动价格表
+        verbose_name_plural= "课程活动"
+    def __str__(self):
+        return "课程: %s -活动: %s - 折扣：%s" % (self.course.name,self.activate.name,self.discount.sale)

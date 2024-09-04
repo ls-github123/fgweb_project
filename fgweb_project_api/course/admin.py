@@ -1,5 +1,6 @@
 from django.contrib import admin
-from course.models import CourseDirectionModel,CourseCategoryModel,CourseModel,TeacherModel
+from course.models import CourseDirectionModel,CourseCategoryModel,CourseModel,TeacherModel,\
+    ActivateModel,DiscountModel,DiscountTypeModel,CourseActivateModel
 # Register your models here.
 
 # 自定义django管理站点admin
@@ -34,3 +35,24 @@ class TeacherModelAdmin(admin.ModelAdmin):
     list_display = ['id', 'avatar_small', 'name','role', 'title', 'signature']
     ordering = ['id']
 admin.site.register(TeacherModel,TeacherModelAdmin)
+
+
+# 优惠活动管理站点配置
+# 等待
+class ActivateModelAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'start_time', 'end_time']
+admin.site.register(ActivateModel, ActivateModelAdmin)
+
+# 折扣类型
+class DiscountTypeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'remark']
+    
+# 折扣
+class DiscountAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'discount_type', 'condition', 'sale']
+admin.site.register(DiscountModel, DiscountAdmin)
+
+# 课程活动价格表
+class CourseActivateAdmin(admin.ModelAdmin):
+    list_display = ['id', 'activate', 'course', 'discount']
+admin.site.register(CourseActivateModel, CourseActivateAdmin)
