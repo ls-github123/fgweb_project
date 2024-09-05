@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from course.models import CourseDirectionModel, CourseCategoryModel, CourseModel, TeacherModel
+from course.models import CourseDirectionModel, CourseCategoryModel, CourseModel, TeacherModel, CourseChapterModel
 
 class CourseDirectionSerializers(serializers.ModelSerializer):
     class Meta():
@@ -35,3 +35,13 @@ class CourseRetrieveSerializer(serializers.ModelSerializer):
                   'description','status','pub_date','period','attachment_path',
                   'attachment_link','students','lessons','pub_lessons','price',
                   'credit','direction_name','category_name','direction','category','teacher','discount']
+        
+class CourseChapterSerializer(serializers.ModelSerializer):
+    get_lesson_list = serializers.SerializerMethodField()
+    
+    class Meta():
+        model = CourseChapterModel
+        fields = ['id','orders','name','summary','pub_date','course','get_lesson_list']
+        
+    def get_lesson_list(self, obj):
+        return obj.get_lesson_list()  # 确保调用模型中的方法

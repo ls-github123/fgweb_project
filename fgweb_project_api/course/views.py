@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from course.models import TeacherModel, CourseDirectionModel, CourseCategoryModel, CourseModel
+from course.models import TeacherModel, CourseDirectionModel, CourseCategoryModel, CourseModel, CourseChapterModel
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from course.serli import CourseDirectionSerializers,CourseCategorySerializers
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import OrderingFilter
-from . import serli
+from course.serli import CourseDirectionSerializers,CourseCategorySerializers,CourseSerializers,CourseRetrieveSerializer,\
+    CourseChapterSerializer
 
 class CoursePageNumberPagination(PageNumberPagination):
     page_size = 5
@@ -39,7 +40,7 @@ class CourseCategoryListApiView(ListAPIView):
 
 # 课程列表视图
 class CourseListApiView(ListAPIView):
-    serializer_class = serli.CourseSerializers
+    serializer_class = CourseSerializers
     pagination_class = CoursePageNumberPagination
     filter_backends = [OrderingFilter] # 局部指定过滤器
     ordering_fields = ['id', 'price', 'students']
@@ -61,9 +62,17 @@ class CourseListApiView(ListAPIView):
 
 class CourseDetaileViews(RetrieveAPIView):
     queryset = CourseModel.objects.all()
-    serializer_class = serli.CourseRetrieveSerializer
+    serializer_class = CourseRetrieveSerializer
     lookup_field = 'pk'
     lookup_url_kwarg = 'courseID'
+
+# 根据课程ID, 获取章节列表
+class CourseChapterListApiView(ListAPIView):
+    queryset = CourseChapterModel.objects.all()
+    serializer_class = CourseChapterSerializer
+    lookup_field = 'pk'
+    lookup_url_kwarg = 'courseID'
+
 
 class IndexViews(APIView):
     """

@@ -225,9 +225,33 @@ class CourseChapterModel(BaseModel):
     course = models.ForeignKey(CourseModel, on_delete=models.CASCADE, db_constraint=False, verbose_name='课程')
     class Meta():
         db_table = 'fg_course_chapter'
+    
     def __str__(self):
         return "第 %d 章 - %s" % (self.orders, self.name)
+
+# json：
+    # [{"":""},{"":"",},]
+    # ["age":18,"height":19,"birthday":2093,{"":""},{}]
     
+    def get_lesson_list(self):
+        lesson_list = self.lesson_list.filter(is_deleted=False, is_show=True).order_by('orders')
+        result_list = []
+        for ls in lesson_list:
+            # 将拼好得字典格式得数据，转换成json格式
+            # Response()
+            # JsonResponse()
+            result_list.append({
+                "id":ls.id,
+                "name":ls.name,
+                "orders":ls.orders,
+                "duration":ls.duration,
+                "pub_date":ls.pub_date,
+                "lesson_link":ls.lesson_link,
+                "free_trail":ls.free_trail,
+            })
+        return result_list
+    
+
 class CourseLessonsModel(BaseModel):
     # 课时小节
     # 类型
@@ -251,4 +275,4 @@ class CourseLessonsModel(BaseModel):
         db_table = 'fg_course_lesson'
         verbose_name_plural = '课时'
     def __str__(self):
-        return "第 %s 章 - 第 %s 课时 - %s" % (self.chapter.orders, self.orders, self.name)
+        return "第 %s 章 - 第 %s 课时 - %s" % (self.chapter.orders, self.orders, self.name)     
