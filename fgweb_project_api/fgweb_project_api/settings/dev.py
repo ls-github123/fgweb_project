@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'home',
     'users', # 用户管理子应用
     'course', # 课程管理
+    'cart', # 购物车管理
 ]
 
 # 设置dajgno AUTH认证系统所需用户模型
@@ -155,7 +156,20 @@ CACHES = {
             # 连接池的配置
             "CONNECTION_POOL_KWARGS": {"max_connections": 100}
         }
-    }
+    },
+    
+    # 购物车数据配置
+    "cart": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        # "LOCATION": "redis://127.0.0.1:6379/1",
+        # LOCATION:'reids://:密码@IP地址：端口号/库编号'
+        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # 连接池的配置
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100}
+        }
+    },
 }
 # 设置用户登录admin站点的时候，记录登录状态的session，保存到redis缓存中
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
