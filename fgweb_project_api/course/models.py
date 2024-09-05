@@ -130,17 +130,41 @@ class CourseModel(BaseModel):
         # 查询有效活动
         now_time = datetime.datetime.now()
         last_activate = self.price_list.filter(activate__start_time__lt = now_time, activate__end_time__gt = now_time).order_by('-id').first()
+        type_text = "优惠类型"
+        expire = -1
+        price = 0 # 优惠后的价格
         if last_activate:
             # 有优惠活动 -- 获取当前课程对应所有优惠信息
             print(last_activate.activate.name)
             print(last_activate.activate.end_time)
             print(last_activate.discount.discount_type.name)
+            # 获取优惠信息
+            type_text = last_activate.discount.discount_type.name
+            # 过期时间
+            expire = last_activate.activate.end_time.timestamp() - now_time.timestamp()
+            
+            # 计算价格
+            course_price = float(self.price) # 当前课程价格
+            # 有限考虑 条件:门槛
+            condition_price = float(last_activate.discount.condition)
+            # 判断当前课程价格 是否大于优惠门槛
+            if course_price >= condition_price:
+                # 计算当前课程参与的优惠 及优惠后的价格
+                sale = last_activate.discount.sale
+                if sale == "0":
+                    # 免费
+                    price = 0
+                elif sale[0] == "*":
+                    # 折扣
+                    price = course_price * float(sale[1:])
+                    
+                price = float(f"{price:.2f}")
         else:
             print('当前课程没有参与优惠活动')
         return {
-            "type":"0", # 满减\折扣 免费
-            "expire":"1000", # 过期时间
-            "price":"188" # 优惠价格
+            "type":type_text, # 满减\折扣 免费
+            "expire":expire, # 过期时间
+            "price":price # 优惠价格
         }
         
 # 优惠活动表
@@ -190,3 +214,41 @@ class CourseActivateModel(BaseModel):
         verbose_name_plural= "课程活动"
     def __str__(self):
         return "课程: %s -活动: %s - 折扣：%s" % (self.course.name,self.activate.name,self.discount.sale)
+    
+    
+# 课程章节
+# 章节
+class CourseChapterModel(BaseModel):
+    orders = models.SmallIntegerField(default=1, verbose_name='第几章')
+    summary = RichTextUploadingField(blank=True, null=True, verbose_name='章节描述')
+    pub_date = models.DateField(auto_now_add=True, verbose_name='章节发布时间')
+    course = models.ForeignKey(CourseModel, on_delete=models.CASCADE, db_constraint=False, verbose_name='课程')
+    class Meta():
+        db_table = 'fg_course_chapter'
+    def __str__(self):
+        return "第 %d 章 - %s" % (self.orders, self.name)
+    
+class CourseLessonsModel(BaseModel):
+    # 课时小节
+    # 类型
+    LESSON_TYPE_CHOICES = {
+        (0,'文档'),
+        (1,'练习'),
+        (2,'视频'),
+    }
+    # 时长
+    orders = models.SmallIntegerField(default=1, verbose_name='第几节')
+    lesson_type = models.SmallIntegerField(choices=LESSON_TYPE_CHOICES, default=2, verbose_name='文档类型')
+    duration = models.CharField(max_length=100, blank=True, null=True, verbose_name='课时时长')
+    lesson_link = models.CharField(max_length=255, verbose_name='课时连接')
+    pub_date = models.DateTimeField(auto_now_add=True, verbose_name='课时发布时间')
+    # 是否可以观看 -- 免费观看
+    free_trail = models.BooleanField(default=False, verbose_name='是否可以免费试看')
+    chapter = models.ForeignKey(CourseChapterModel, related_name='lesson_list', db_constraint=False, on_delete=models.CASCADE, verbose_name='章节')
+    course = models.ForeignKey(CourseModel, related_name='lesson_list', db_constraint=False, on_delete=models.CASCADE, verbose_name='课程')
+    
+    class Meta():
+        db_table = 'fg_course_lesson'
+        verbose_name_plural = '课时'
+    def __str__(self):
+        return "第 %s 章 - 第 %s 课时 - %s" % (self.chapter.orders, self.orders, self.name)

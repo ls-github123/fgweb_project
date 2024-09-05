@@ -6,7 +6,7 @@ urlpatterns = [
     path('index/',IndexViews.as_view()),
     path('diretion/',CourseDirectionListApiView.as_view()),
     re_path(r'course/(?P<directionID>\d+)/(?P<categoryID>\d+)/$',CourseListApiView.as_view()),
-    re_path(r'detailes/(?P<courseID>\d+)/$', CourseDetaileViews.as_view()),
+    re_path(r'coursdetail/(?P<courseID>\d+)/$', CourseDetaileViews.as_view()),
     # 重写
     # path('category/',CourseCategoryListApiView.as_view()),
     re_path(r'^category/(?P<directionID>\d+)/$',CourseCategoryListApiView.as_view()),
