@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'users', # 用户管理子应用
     'course', # 课程管理
     'cart', # 购物车管理
+    'coupon', # 优惠券管理
 ]
 
 # 设置dajgno AUTH认证系统所需用户模型
