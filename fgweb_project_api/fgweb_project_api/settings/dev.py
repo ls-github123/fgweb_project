@@ -292,7 +292,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',  # jwt认证[api客户端]
         'rest_framework.authentication.SessionAuthentication',  # session认证[Admin站点]
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.BasicAuthentication', # 通过在请求头中传递用户名和密码来进行身份验证
     ),
 }
 

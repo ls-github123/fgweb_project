@@ -149,22 +149,31 @@ class CourseModel(BaseModel):
             condition_price = float(last_activate.discount.condition)
             # 判断当前课程价格 是否大于优惠门槛
             if course_price >= condition_price:
-                # 计算当前课程参与的优惠 及优惠后的价格
+                # 计算当前课程参与得优惠，以及优惠后得价格
                 sale = last_activate.discount.sale
+
                 if sale == "0":
                     # 免费
                     price = 0
                 elif sale[0] == "*":
                     # 折扣
                     price = course_price * float(sale[1:])
-                    
+
+                    # *0.2
+                    # -100
+                elif sale[0] == "-":
+                    price = course_price - float(sale[1:])
+
                 price = float(f"{price:.2f}")
+            # else:
+            #     price = course_price
         else:
-            print('当前课程没有参与优惠活动')
+            print('当前课程没有参与优惠活动.....')
+            price = self.price
         return {
-            "type":type_text, # 满减\折扣 免费
-            "expire":expire, # 过期时间
-            "price":price # 优惠价格
+            "type":type_text,  #  满减、折扣   免费
+            "expire":expire,  # 过期时间
+            "price":price   #  优惠价格
         }
         
 # 优惠活动表

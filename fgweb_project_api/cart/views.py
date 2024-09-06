@@ -82,3 +82,25 @@ class CartViews(APIView):
         except CourseModel.DoesNotExist:
             print('课程不存在，添加购物车失败，请刷新课程信息......')
             return Response({'message':'课程不存在，添加购物车失败，请刷新课程信息......'},status=status.HTTP_400_BAD_REQUEST)
+        
+    # 选定状态改变
+    def patch(self, request):
+        user_id = request.user.id
+        # 课程ID
+        coruse_id = request.data.get('course_id', None)
+        # 获取前端课程选中状态
+        selected = request.data.get("selected", True)
+        redis = get_redis_connection('cart')
+        # 判断课程是否存在
+        try:
+            CourseModel.objects.get(id=coruse_id, is_deleted=False, is_show=True)
+        except CourseModel.DoesNotExist:
+            print('操作课程不存在')
+            # 删除数据库中的数据
+            redis.hdel(f"cart_{user_id}", coruse_id)
+            return Response({"message":"当前课程不存在,或已下架"}, status=status.HTTP_400_BAD_REQUEST)
+        print('修改课程选中状态......')
+        redis.hset(f"cart_{user_id}", coruse_id, selected)
+        
+        # hset(key, 域, 值)
+        return Response({"message":"状态修改成功"}, status=status.HTTP_200_OK)
