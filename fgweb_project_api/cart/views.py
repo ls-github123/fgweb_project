@@ -104,3 +104,33 @@ class CartViews(APIView):
         
         # hset(key, 域, 值)
         return Response({"message":"状态修改成功"}, status=status.HTTP_200_OK)
+    
+    # 购物车列表全选/删除
+    def put(self, request):
+        # 用户id 全选状态/未选中
+        user_id = request.user.id
+        selected = int(request.data.get('selected'))
+        redis = get_redis_connection('cart')
+        cart_hash = redis.hgetall(f"cart_{user_id}")
+        # 判断当前用户，是否存在购买课程
+        if len(cart_hash) < 1:
+            return Response({"message":"购物车没有数据,请先添加需要购买的课程"}, status=status.HTTP_200_OK)
+        
+        # 获取购物车中所有课程 id
+        cart_list = [int(c.decode()) for c in cart_hash]
+        # 开启管道 将redis多个命令 同时打包发送至redis数据库 减少频繁访问的网络压力
+        pipe = redis.pipeline()
+        pipe.multi()
+        for i in cart_list:
+            pipe.hset(f"cart_{user_id}", i, selected)
+        # 执行管道提交
+        pipe.execute()
+        return Response({"message":"全选状态修改成功..."}, status=status.HTTP_200_OK)
+    
+    def delete(self, request):
+        # 课程id以何种方式传递 id 路径 查询参数
+        course_id = request.query_params.get('course_id')
+        user_id = request.user.id
+        redis = get_redis_connection('cart')
+        redis.hdel(f"cart_{user_id}", course_id)
+        return Response({"message":"购物车课程删除成功..."}, status=status.HTTP_200_OK)
