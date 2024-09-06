@@ -58,7 +58,6 @@ class CouponCourseDirectionModel(models.Model):
         verbose_name_plural = "优惠券与专业方向"
 
 
-
 # 优惠券与分类
 class CouponCourseCategoryModel(models.Model):
 
