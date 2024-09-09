@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from coupon.views import CouponListView
 
 urlpatterns = [
-    
+    path('list/', CouponListView.as_view()),
 ]

@@ -26,6 +26,6 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('course/', include('course.urls')),
     path('cart/', include('cart.urls')),
-    # path('coupon/', include('coupon.urls')),
+    path('coupon/', include('coupon.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')), # 富文本编辑器路径
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
