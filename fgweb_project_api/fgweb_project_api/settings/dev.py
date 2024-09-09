@@ -171,6 +171,17 @@ CACHES = {
             "CONNECTION_POOL_KWARGS": {"max_connections": 100}
         }
     },
+    
+    # 优惠券数据配置
+    "coupon": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/4",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # 连接池的配置
+            "CONNECTION_POOL_KWARGS": {"max_connections": 100}
+        }
+    },
 }
 # 设置用户登录admin站点的时候，记录登录状态的session，保存到redis缓存中
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
