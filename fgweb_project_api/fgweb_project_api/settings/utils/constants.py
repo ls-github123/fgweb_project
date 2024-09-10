@@ -11,3 +11,6 @@ NAV_FOOTER_SIZE = 10
 
 # 轮播图最大请求数量
 BANNER_SIZE = 5
+
+# 项目中积分兑换钱的比例
+CREDIT_TO_MONEY = 10
