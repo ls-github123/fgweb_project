@@ -6,6 +6,41 @@ from rest_framework.response import Response
 from rest_framework import status
 from django_redis import get_redis_connection
 
+# 获取购物车中勾选的商品列表
+class CartToOrderViews(APIView):
+    permission_classes = [IsAuthenticated] # 配置访问权限 仅允许已认证用户访问
+    
+    def get(self, request):
+        user_id = request.user.id
+        # 从redis中根据用户id,获取当前用户所有数据
+        redis = get_redis_connection('cart')
+        
+        cart_hash = redis.hgetall(f"cart_{user_id}")
+        if len(cart_hash) < 1:
+            return Response({"message":"购物车中没有添加任何课程信息..."}, status=status.HTTP_204_NO_CONTENT)
+        # 获取购物车中的数据   购物车中的数据
+        cart = [(int(key.decode()),bool(int(value.decode()))) for key,value in cart_hash.items()]
+            # [(1,True),(2,True)]
+        # 数据，判断
+        # 获取选中课程id列表
+        course_id_list = [i[0] for i in cart if i[1]==True]
+        # 根据选中课程id列表，获取课程详细信息
+        course_list = CourseModel.objects.filter(id__in=course_id_list,is_deleted=False,is_show=True)
+        # 创建空列表，用于存放课程精简信息（课程列表）
+        data = []
+
+        for course in course_list:
+            data.append({
+                "id":course.id,
+                "name":course.name,
+                "course_cover":"http://127.0.0.1:8000"+course.course_cover.url,
+                "price":course.price,
+                "discount":course.discount,
+                "course_type":course.course_type,
+                "credit":course.credit,
+            })
+        return Response({"message":"获取购物车选中商品成功",'cart':data})
+
 class CartViews(APIView):
     # 配置，访问视图接口的用户权限
     permission_classes = [IsAuthenticated,]
@@ -134,38 +169,3 @@ class CartViews(APIView):
         redis = get_redis_connection('cart')
         redis.hdel(f"cart_{user_id}", course_id)
         return Response({"message":"购物车课程删除成功..."}, status=status.HTTP_200_OK)
-    
-# 获取购物车中勾选的商品列表
-class CartToOrderViews(APIView):
-    permission_classes = [IsAuthenticated] # 配置访问权限 仅允许已认证用户访问
-    
-    def get(self, request):
-        user_id = request.user.id
-        # 从redis中根据用户id,获取当前用户所有数据
-        redis = get_redis_connection('cart')
-        
-        cart_hash = redis.hgetall(f"cart_{user_id}")
-        if len(cart_hash) < 1:
-            return Response({"message":"购物车中没有添加任何课程信息..."}, status=status.HTTP_204_NO_CONTENT)
-        # 获取购物车中的数据   购物车中的数据
-        cart = [(int(key.decode()),bool(int(value.decode()))) for key,value in cart_hash.items()]
-            # [(1,True),(2,True)]
-        # 数据，判断
-        # 获取选中课程id列表
-        course_id_list = [i[0] for i in cart if i[1]==True]
-        # 根据选中课程id列表，获取课程详细信息
-        course_list = CourseModel.objects.filter(id__in=course_id_list,is_deleted=False,is_show=True)
-        # 创建空列表，用于存放课程精简信息（课程列表）
-        data = []
-
-        for course in course_list:
-            data.append({
-                "id":course.id,
-                "name":course.name,
-                "course_cover":"http://127.0.0.1:8000"+course.course_cover.url,
-                "price":course.price,
-                "discount":course.discount,
-                "course_type":course.course_type,
-                "credit":course.credit,
-            })
-        return Response({"message":"获取购物车选中商品成功",'cart':data})

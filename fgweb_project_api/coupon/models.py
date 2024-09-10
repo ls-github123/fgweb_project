@@ -16,20 +16,20 @@ from users.models import UsersModel
     # 折扣：具体优惠  sale
 
 class CouponModels(BaseModel):
-    DISCOUNT_CHOICES = {
+    DISCOUNT_CHOICES = [
         (0,'减免'),
         (1,'折扣')
-    }
-    TYPE_CHOICES = {
+    ]
+    TYPE_CHOICES = [
         (0,'通用类型'),
         (1,'指定方向专业'),
         (2,'指定课程分类'),
         (3,'指定课程'),
-    }
-    GET_CHOICES = {
+    ]
+    GET_CHOICES = [
         (0,'系统赠送'),
         (1,'用户领取'),
-    }
+    ]
     discount = models.SmallIntegerField(choices=DISCOUNT_CHOICES,default=1, verbose_name="优惠方式")
     coupon_type =models.SmallIntegerField(choices=TYPE_CHOICES,default=0,verbose_name="优惠券类型")
     get_type =models.SmallIntegerField(choices=GET_CHOICES,default=0,verbose_name="优惠券领取方式")
@@ -86,12 +86,12 @@ class CouponCourseModel(models.Model):
 
 # 优惠券日志管理
 class CouponLogModel(BaseModel):
-    USE_CHOICES = {
+    USE_CHOICES = [
         (0,'未使用'),
         (1,'已使用'),
         (2,'已过期'),
-    }
-    user = models.ForeignKey(UsersModel,on_delete=models.CASCADE,related_name="to_conpon",db_constraint=False,verbose_name="用户")
+    ]
+    user = models.ForeignKey(UsersModel,on_delete=models.CASCADE,related_name="to_coupon",db_constraint=False,verbose_name="用户")
     coupon = models.ForeignKey(CouponModels,on_delete=models.CASCADE,related_name="to_user",db_constraint=False,verbose_name="优惠券")
     # 订单中使用优惠券  ----   等待开发
     # orders =

@@ -18,11 +18,12 @@ class CouponListView(APIView):
         return Response({"message":"优惠券列表获取成功", "coupon":coupon_list})
     
 class EnableCouponListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     def get(self,request):
         # data = get_user_enable_coupon_list(request.user.id)
         data = get_user_enable_coupon_list(1)
-
+        print(request.user.credit)
+        print(data)
         return Response({"message":"可用优惠券列表返回成功",
                          "has_credit":request.user.credit,
                          "credit_to_money":constants.CREDIT_TO_MONEY,
