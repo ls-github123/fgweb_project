@@ -132,7 +132,7 @@ class OrderModelSerializer(serializers.ModelSerializer):
                     total_discount_price = float(use_credit/constants.CREDIT_TO_MONEY)
                     # 扣除用户得最终积分
                     user.credit = user.credit - use_credit
-
+                    user.save() # 提交数据库
                 # 给订单列表赋值，课程总价    实际付款金额
                 orders.total_price = total_price
                 orders.real_price = float(real_price) - float(total_discount_price)
