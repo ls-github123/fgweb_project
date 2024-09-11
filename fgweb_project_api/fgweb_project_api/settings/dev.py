@@ -299,7 +299,7 @@ LOGGING = {
 # DRF 配置
 REST_FRAMEWORK = {
     # 自定义异常处理
-    'EXCEPTION_HANDLER': 'fgweb_project_api.settings.utils.exceptions.costom_exception_handler',
+    # 'EXCEPTION_HANDLER': 'fgweb_project_api.settings.utils.exceptions.costom_exception_handler',
     
     # 自定义认证
     'DEFAULT_AUTHENTICATION_CLASSES': (

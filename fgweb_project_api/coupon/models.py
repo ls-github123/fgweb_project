@@ -2,6 +2,7 @@ from django.db import models
 from fgweb_project_api.settings.utils.models import BaseModel
 from course.models import CourseDirectionModel,CourseCategoryModel,CourseModel
 from users.models import UsersModel
+from orders.models import OrdersModel
 # Create your models here.
 
 # 优惠券模型类
@@ -94,7 +95,7 @@ class CouponLogModel(BaseModel):
     user = models.ForeignKey(UsersModel,on_delete=models.CASCADE,related_name="to_coupon",db_constraint=False,verbose_name="用户")
     coupon = models.ForeignKey(CouponModels,on_delete=models.CASCADE,related_name="to_user",db_constraint=False,verbose_name="优惠券")
     # 订单中使用优惠券  ----   等待开发
-    # orders =
+    order = models.ForeignKey(OrdersModel, null=True, blank=True, on_delete=models.CASCADE, related_name='to_coupon', db_constraint=False, verbose_name="订单")
     use_time = models.DateTimeField(null=True,blank=True,verbose_name="使用时间")
     use_status = models.SmallIntegerField(choices=USE_CHOICES,null=True,blank=True,default=0,verbose_name="使用状态")
     class Meta():
