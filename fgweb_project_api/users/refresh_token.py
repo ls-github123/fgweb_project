@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 try:
     # 授权获取登录用户
     user = UsersModel.objects.get(id=1)
+    print(f"token:{user}")
     # 根据用户，获取刷新token实例
     refresh = RefreshToken.for_user(user)
     print(refresh)

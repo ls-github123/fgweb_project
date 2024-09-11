@@ -35,12 +35,12 @@ class OrderListApiView(ListAPIView):
     # queryset = OrdersModel.objects.all()
     def get_queryset(self):
         user = self.request.user
+        # print(user)
         # 根据当前用户，查询全部订单
-        query_set = OrdersModel.objects.filter(user=user,is_deleted=False,is_show=True)
-
+        query_set = OrdersModel.objects.filter(user=user, is_deleted=False, is_show=True)
+        # print(query_set)
         order_status = int(self.request.query_params.get('status',-1))
 
-        # 判断4此
         # 获取数据库存储得订单状态码
         status_list = [item[0] for item in OrdersModel.STATUS_CHOICES]
 

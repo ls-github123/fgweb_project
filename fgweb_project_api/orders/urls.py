@@ -3,6 +3,6 @@ from orders.views import OrderCreateApiViews, OrderPayStatusChoicesApiView, Orde
 
 urlpatterns = [
     path('orders/', OrderCreateApiViews.as_view()),
-    path('chioces/',OrderPayStatusChoicesApiView.as_view()),
-    path('list/',OrderListApiView.as_view())
+    path('chioces/', OrderPayStatusChoicesApiView.as_view()),
+    path('list/', OrderListApiView.as_view()),
 ]

@@ -187,7 +187,7 @@ const order = reactive({
   },
   get_order_list(token){
     // 获取当前登录用户的订单列表[分页显示]
-     return http.get('/order/list', {
+     return http.get('/order/list/', {
         params: {
           page: this.page,
           size: this.size,
