@@ -35,6 +35,20 @@ class OrdersModel(BaseModel):
     def __str__(self):
         return "%s 总价: %s, 实付金额: %s" % (self.name, self.total_price, self.real_price)
     
+    # 订单与优惠券缺少关联
+    def coupon(self):
+        # 获取当前关联的优惠信息,向前端返回
+        coupon_related = self.to_coupon.first()
+        if coupon_related:
+            return {
+                "id":coupon_related.coupon.id,
+                'name':coupon_related.coupon.name,
+                'sale': coupon_related.coupon.sale,
+                'discount':coupon_related.coupon.discount,
+                'condition':coupon_related.coupon.condition,
+            }
+        return {}
+    
 # 订单详情
 class OrderDetaileModel(BaseModel):
     order = models.ForeignKey(OrdersModel, related_name='order_courses', on_delete=models.CASCADE, db_constraint=False, verbose_name='订单')

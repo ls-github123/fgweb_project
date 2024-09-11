@@ -166,3 +166,23 @@ class OrderModelSerializer(serializers.ModelSerializer):
                 print(es)
                 transaction.savepoint_rollback(t1)
                 raise serializers.ValidationError(detail='订单生成失败,请稍后再试...',code='order_error')
+            
+class OrderDetailModelSerializer(serializers.ModelSerializer):
+    course_id = serializers.IntegerField(source='course.id')
+    course_name = serializers.CharField(source='course.name')
+    course_cover = serializers.ImageField(source='course.course_cover')
+    
+    class Meta():
+        model = OrderDetaileModel
+        fields = ['id','price','real_price','discount_name','course_id','course_name','course_cover']
+
+
+# 订单列表序列化器
+class OrderListModelSerializer(serializers.ModelSerializer):
+    # 嵌套序列化
+    order_courses = OrderDetailModelSerializer(many=True)
+    # 优惠券信息
+    # 参数不够用，添加
+    class Meta:
+        model = OrdersModel
+        fields = ['id','order_number','total_price','order_status','real_price','pay_time','pay_type','credit','order_courses','created_time','coupon']
