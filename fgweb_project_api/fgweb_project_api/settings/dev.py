@@ -397,3 +397,19 @@ DEFAULT_FILE_STORAGE = 'django_oss_storage.backends.OssMediaStorage'
 import django
 from django.utils.encoding import force_str
 django.utils.encoding.force_text = force_str
+
+
+# 支付宝接口配置
+ALIPAY = {
+    # 'gateway': 'https://openapi.alipay.com/gateway.do',  # 真实网关地址
+    'gateway': 'https://openapi-sandbox.dl.alipaydev.com/gateway.do',  # 沙箱网关地址
+    'appid': '9021000140666009',  # 支付应用ID
+    'sign_type': 'RSA2',  # 签证的加密算法
+    'debug': True,  # 沙箱模式下必须设置为True，真实环境下设置为False
+    'verbose': True,  # 是否在调试模式下输出调试数据，真实环境下设置为False
+    'timeout': 33,  # 请求超时时间，单位：秒
+    "app_private_key_path": BASE_DIR.parent / "pays/keys/app_private_key.pem",  # 应用私钥路径
+    "alipay_public_key_path": BASE_DIR.parent / "pays/keys/alipay_public_key.pem",  # 支付宝公钥路径
+    "return_url": "http://127.0.0.1:3000/alipay",  # 同步回调结果通知地址【客户端】
+    "notify_url": "http://127.0.0.1:8000/alipay/",  # 异步回调结果通知地址【服务端】
+}
