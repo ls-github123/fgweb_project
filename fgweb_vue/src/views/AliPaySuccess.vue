@@ -10,10 +10,10 @@
           </div>
         </div>
         <div class="order-info">
-            <p class="info1"><b>付款时间：</b><span>{{order.pay_time.replace("T"," ")}}</span></p>
+          <p class="info1"><b>付款时间：</b><span>{{order.pay_time}}</span></p>
             <p class="info2"><b>付款金额：</b><span >{{order.real_price?.toFixed(2)}}</span></p>
             <p class="info3"><b>课程信息：</b>
-              <span v-for="course in order.course_list">《{{course.name}}》</span>
+              <span v-for="course in order.course_list" :key="course.id">《{{course.name}}》</span>
             </p>
         </div>
         <div class="wechat-code">

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'cart', # 购物车管理
     'coupon', # 优惠券管理
     'orders', # 订单管理
+    'pays', # 调用支付模块
 ]
 
 # 设置dajgno AUTH认证系统所需用户模型
