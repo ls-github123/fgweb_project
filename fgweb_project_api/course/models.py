@@ -4,6 +4,7 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from stdimage import StdImageField # 导入图片处理-缩略原图
 from django.utils.safestring import mark_safe
 import datetime
+import json
 # 方向列表\\\\专业列表
 
 class CourseDirectionModel(BaseModel):
@@ -175,6 +176,11 @@ class CourseModel(BaseModel):
             "expire":expire,  # 过期时间
             "price":price   #  优惠价格
         }
+    def discount_json(self):
+        # 必须转成字符串才能保存到es中。该方法提供给es使用的。
+        # es中存储和查询都是json格式数据
+        # return json.dumps(self.discount)
+        return self.discount
         
 # 优惠活动表
 class ActivateModel(BaseModel):

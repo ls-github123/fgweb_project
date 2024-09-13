@@ -1,6 +1,10 @@
 from django.urls import path,re_path
 from course.views import IndexViews, CourseDirectionListApiView,CourseCategoryListApiView,\
-    CourseListApiView, CourseDetaileViews, CourseChapterListApiView
+    CourseListApiView, CourseDetaileViews, CourseChapterListApiView, CourseSearchViewSet
+
+from rest_framework import routers
+router = routers.DefaultRouter()
+router.register('search',CourseSearchViewSet,basename="course_search")
 
 urlpatterns = [
     path('index/',IndexViews.as_view()),
@@ -12,3 +16,5 @@ urlpatterns = [
     # path('category/',CourseCategoryListApiView.as_view()),
     re_path(r'^category/(?P<directionID>\d+)/$',CourseCategoryListApiView.as_view()),
 ]
+
+urlpatterns += router.urls

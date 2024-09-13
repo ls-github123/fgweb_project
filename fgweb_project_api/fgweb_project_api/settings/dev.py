@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'haystack', # 导入全文搜索支持框架
     'ckeditor', # 导入ckeditor富文本编辑器
     'ckeditor_uploader',
     'stdimage', # 导入图片处理-对原图生成缩略图
@@ -75,7 +76,7 @@ ROOT_URLCONF = 'fgweb_project_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR.parent,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -414,3 +415,23 @@ ALIPAY = {
     "return_url": "http://127.0.0.1:3000/alipay",  # 同步回调结果通知地址【客户端】
     "notify_url": "http://127.0.0.1:8000/alipay/",  # 异步回调结果通知地址【服务端】
 }
+
+
+# haystack 连接 ELASTICSEARCH 配置
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        # 使用 Elasticsearch 7 的搜索引擎模块
+        'ENGINE': 'haystack.backends.elasticsearch7_backend.Elasticsearch7SearchEngine',
+        # URL
+        'URL': config('ELASTICSEARCH_URL'),
+        # Elasticsearch 索引名称 (es 索引仓库)
+        'INDEX_NAME': 'haystack',
+        # 连接认证相关配置
+        'KWARGS': {
+            "http_auth":(config('ELASTICSEARCH_USERNAME'), config('ELASTICSEARCH_PASSWORD')),
+        },
+    },
+}
+
+# 当mysqlORM操作数据库改变时，自动更新es的索引，否则es的索引会找不到新增的数据
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

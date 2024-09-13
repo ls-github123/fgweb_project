@@ -7,13 +7,26 @@ from course.serli import CourseDirectionSerializers,CourseCategorySerializers
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import OrderingFilter
 from course.serli import CourseDirectionSerializers,CourseCategorySerializers,CourseSerializers,CourseRetrieveSerializer,\
-    CourseChapterSerializer
+    CourseChapterSerializer, CourseIndexHaystackSerializer
+from drf_haystack.viewsets import HaystackViewSet
+from rest_framework.filters import OrderingFilter
+from drf_haystack.filters import HaystackFilter
+
 
 class CoursePageNumberPagination(PageNumberPagination):
     page_size = 5
     page_query_param = 'page'
     page_size_query_param = "size"
     max_page_size = 10
+
+# ES搜索视图  课程信息全文检索视图
+class CourseSearchViewSet(HaystackViewSet):
+    # 指定本次搜索得最终真实数据得保存模型
+    index_models = [CourseModel]
+    serializer_class = CourseIndexHaystackSerializer
+    filter_backends = [OrderingFilter,HaystackFilter]
+    ordering_fields = ('id','students','orders')
+    pagination_class = CoursePageNumberPagination
 
 # 课程方向视图
 class CourseDirectionListApiView(ListAPIView):
